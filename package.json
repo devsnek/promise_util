@@ -1,0 +1,6 @@
+{
+  "name": "promise_util",
+  "version": "1.3.0",
+  "main": "index.js",
+  "author": "snek <me@gus.host>"
+}
