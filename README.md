@@ -4,6 +4,8 @@ Static Methods:
 - `create()` -> Promise
 - `resolve(Promise, *)` -> Promise
 - `reject(Promise, *)` -> Promise
+- `sleep(Number)`/`delay(Number)` -> Promise
+- `each(Iterable)` -> Promise
 
 Static `resolve`/`reject` behave normally if:
 1. arguments.length is 1  

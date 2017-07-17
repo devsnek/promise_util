@@ -36,11 +36,27 @@ const Debug = require('vm').runInDebugContext('Debug');
     promiseReject(this, x);
   };
 
-  Promise.delay = function(time) {
+  Promise.sleep = function(time) {
     const p = Promise.create();
     setTimeout(p.resolve.bind(p), time);
     return p;
   };
+  Promise.delay = Promise.sleep;
+
+  Promise.each = function(input) {
+    return new Promise((resolve, reject) => {
+    const iterator = input[Symbol.iterator]();
+    const resolved = [];
+      (function each() {
+        const p = iterator.next();
+        if (p.done) return resolve(resolved);
+        p.value.then((r) => {
+          resolved.push(r);
+          each();
+        }, (e) => reject(e));
+      }());
+    });
+  }
 }());
 
 function getPromiseInfo(promise) {

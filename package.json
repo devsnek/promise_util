@@ -1,6 +1,7 @@
 {
   "name": "promise_util",
-  "version": "1.0.0",
+  "description": "Useful and fast utilities for working with Promises",
+  "version": "1.0.1",
   "main": "index.js",
   "author": "snek <me@gus.host>"
 }
