@@ -15,7 +15,7 @@ const Debug = require('vm').runInDebugContext('Debug');
   };
 
   Promise.reject = function(...args) {
-    if (arguments.length === 2 && args[0] instanceof Promise) {
+    if (args.length === 2 && args[0] instanceof Promise) {
       return promiseReject(args[0], args[1]);
     }
     return originalReject.apply(this, args);
