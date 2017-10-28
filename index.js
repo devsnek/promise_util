@@ -1,6 +1,17 @@
 const { createPromise, promiseResolve, promiseReject } = process.binding('util');
 const { resolve: originalResolve, reject: originalReject } = Promise;
-const Debug = require('vm').runInDebugContext('Debug');
+const { setFlagsFromString } = process.binding('v8');
+
+setFlagsFromString('--allow_natives_syntax');
+const { PromiseStatus, PromiseResult } = require('./v8');
+// compile functions
+const pr = Promise.resolve();
+PromiseStatus(pr);
+PromiseResult(pr);
+const re = /^--allow[-_]natives[-_]syntax$/;
+if (!process.execArgv.some((s) => re.test(s))) {
+  setFlagsFromString('--noallow_natives_syntax');
+}
 
 (function binding() {
   if (Promise.create) return;
@@ -60,11 +71,10 @@ const Debug = require('vm').runInDebugContext('Debug');
 }());
 
 function getPromiseInfo(promise) {
-  let mirror = Debug.MakeMirror(promise, true);
-  if (!mirror.isPromise()) return { status: 'resolved', value: promise };
-  let status = mirror.status();
+  if (!(promise instanceof Promise)) return { status: 'resolved', value: promise };
+  let status = PromiseStatus(promise);
   if (status === 'pending') return { status };
-  let value = mirror.promiseValue().value();
+  let value = PromiseResult(promise);
   return { status, value };
 }
 
