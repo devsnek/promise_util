@@ -2,19 +2,19 @@ const { createPromise, promiseResolve, promiseReject } = process.binding('util')
 const { resolve: originalResolve, reject: originalReject } = Promise;
 const { setFlagsFromString } = process.binding('v8');
 
-setFlagsFromString('--allow_natives_syntax');
+const re = /^--allow[-_]natives[-_]syntax$/;
+const shouldSetFlags = !process.execArgv.some((s) => re.test(s));
+if (shouldSetFlags) setFlagsFromString('--allow_natives_syntax');
+
 const { PromiseStatus, PromiseResult } = require('./v8');
 // compile functions
 const pr = Promise.resolve();
 PromiseStatus(pr);
 PromiseResult(pr);
-const re = /^--allow[-_]natives[-_]syntax$/;
-if (!process.execArgv.some((s) => re.test(s))) {
-  setFlagsFromString('--noallow_natives_syntax');
-}
+if (shouldSetFlags) setFlagsFromString('--noallow_natives_syntax');
 
 (function binding() {
-  if (Promise.create) return;
+  if (Promise.create === createPromise) return;
 
   Promise.create = createPromise;
 
