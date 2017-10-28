@@ -37,22 +37,15 @@ if (!process.execArgv.some((s) => re.test(s))) {
     isResolved: { get() { return this.info.status === 'resolved'; } },
     isRejected: { get() { return this.info.status === 'rejected'; } },
     isPending: { get() { return this.info.status === 'pending'; } },
+    resolve: { value(x) { return promiseResolve(this, x); } },
+    reject: { value(x) { return promiseReject(this, x); } },
   });
 
-  Promise.prototype.resolve = function resolve(x) {
-    return promiseResolve(this, x);
-  };
-
-  Promise.prototype.reject = function reject(x) {
-    return promiseReject(this, x);
-  };
-
-  Promise.sleep = function sleep(time) {
+  Promise.delay = Promise.sleep = function sleep(time) {
     const p = Promise.create();
     setTimeout(p.resolve.bind(p), time);
     return p;
   };
-  Promise.delay = Promise.sleep;
 
   Promise.each = function each(input) {
     return new Promise((resolve, reject) => {
