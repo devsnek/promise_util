@@ -17,7 +17,7 @@ Prototype Methods:
 - `reject(*)` -> Promise
 
 Prototype Properties:
-- `info` -> `{ status: String, value?: * }`
+- `info` -> `{ state: String, result?: * }`
 - `isResolved` -> Boolean
 - `isRejected` -> Boolean
 - `isPending` -> Boolean
