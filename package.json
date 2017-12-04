@@ -12,5 +12,8 @@
   "bugs": {
     "url": "https://github.com/devsnek/promise_util/issues"
   },
-  "homepage": "https://github.com/devsnek/promise_util#readme"
+  "homepage": "https://github.com/devsnek/promise_util#readme",
+  "devDependencies": {
+    "tap": "^11.0.0"
+  }
 }

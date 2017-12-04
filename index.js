@@ -1,17 +1,16 @@
-const {
-  createPromise,
-  promiseResolve,
-  promiseReject,
-  getPromiseDetails,
-  kPending,
-  kFulfilled,
-  kRejected,
-} = process.binding('util');
 const { resolve: originalResolve, reject: originalReject } = Promise;
+const {
+  createPromise, promiseResolve, promiseReject,
+  getPromiseDetails, kPending, kFulfilled, kRejected,
+} = process.binding('util');
 
-(function binding() {
-  if (Promise.create === createPromise)
+const kMounted = Symbol('promise_util.mounted');
+
+function mount(Promise = global.Promise) {
+  if (Promise[kMounted])
     return;
+
+  Promise[kMounted] = true;
 
   Promise.create = createPromise;
 
@@ -30,7 +29,7 @@ const { resolve: originalResolve, reject: originalReject } = Promise;
   };
 
   Object.defineProperties(Promise.prototype, {
-    info: { get() { return getPromiseInfo(this); } },
+    details: { get() { return getDetails(this); } },
     isResolved: { get() { return getPromiseDetails(this)[0] === kFulfilled; } },
     isRejected: { get() { return getPromiseDetails(this)[0] === kRejected; } },
     isPending: { get() { return getPromiseDetails(this)[0] === kPending; } },
@@ -59,7 +58,7 @@ const { resolve: originalResolve, reject: originalReject } = Promise;
       }());
     });
   };
-}());
+}
 
 const StateMap = {
   [kPending]: 'pending',
@@ -67,14 +66,22 @@ const StateMap = {
   [kRejected]: 'rejected',
 };
 
-function getPromiseInfo(promise) {
+function getDetails(promise) {
   if (!(promise instanceof Promise))
     return { state: StateMap[kFulfilled], result: promise };
+
   const [state, result] = getPromiseDetails(promise);
+
   if (state === kPending)
     return { state: StateMap[state] };
 
   return { state: StateMap[state], result };
 }
 
-module.exports = getPromiseInfo;
+module.exports = {
+  getDetails,
+  mount,
+  resolve: promiseResolve,
+  reject: promiseReject,
+  create: createPromise,
+};
