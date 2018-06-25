@@ -1,5 +1,7 @@
-const PromiseUtil = require('.');
+'use strict';
+
 const tap = require('tap');
+const PromiseUtil = require('.');
 
 tap.plan(9);
 
@@ -12,7 +14,7 @@ tap.plan(9);
 
 {
   const p = Promise.resolve(5);
-  tap.same(PromiseUtil.getDetails(p), { state: 'resolved', result: 5 }, 'unmounted details for resolved');
+  tap.same(PromiseUtil.getDetails(p), { state: 'fulfilled', result: 5 }, 'unmounted details for resolved');
 }
 
 {
@@ -33,7 +35,7 @@ PromiseUtil.mount();
 
 {
   const p = Promise.resolve(5);
-  tap.same(p.details, { state: 'resolved', result: 5 }, 'mounted details for resolved');
+  tap.same(p.details, { state: 'fulfilled', result: 5 }, 'mounted details for resolved');
   tap.ok(p.isResolved, 'mounted isResolved');
 }
 
